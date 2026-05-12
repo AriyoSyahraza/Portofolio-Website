@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DataAI Portfolio — Data, ML & AI Engineer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Syne', 'sans-serif'],
+                        body: ['DM Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        navy: {
+                            950: '#04070F',
+                            900: '#080D1A',
+                            800: '#0D1526',
+                            700: '#111D35',
+                            600: '#162344',
+                        },
+                        cyan: { accent: '#22D3EE', glow: '#06B6D4' },
+                        blue: { accent: '#60A5FA', electric: '#3B82F6' },
+                        purple: { accent: '#A78BFA', soft: '#8B5CF6' },
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'scan': 'scan 4s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        scan: {
+                            '0%': { top: '0%' },
+                            '100%': { top: '100%' },
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        :root {
+            --navy-950: #04070F;
+            --navy-900: #080D1A;
+            --navy-800: #0D1526;
+            --navy-700: #111D35;
+            --cyan: #22D3EE;
+            --cyan-glow: #06B6D4;
+            --blue: #60A5FA;
+            --purple: #A78BFA;
+        }
+
+        body {
+            background-color: var(--navy-900);
+            font-family: 'DM Sans', sans-serif;
+            color: #CBD5E1;
+            overflow-x: hidden;
+        }
+
+        /* ─── Grid background ─────────────────────────────── */
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(34, 211, 238, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(34, 211, 238, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* ─── Glow utilities ──────────────────────────────── */
+        .glow-cyan {
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.15), 0 0 60px rgba(34, 211, 238, 0.06);
+        }
+
+        .glow-blue {
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.15), 0 0 60px rgba(96, 165, 250, 0.06);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 30px rgba(34, 211, 238, 0.5);
+        }
+
+        /* ─── Scrollbar ───────────────────────────────────── */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--navy-950);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--cyan-glow);
+            border-radius: 2px;
+        }
+
+        /* ─── Card hover ──────────────────────────────────── */
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 40px rgba(34, 211, 238, 0.12);
+            border-color: rgba(34, 211, 238, 0.4) !important;
+        }
+
+        /* ─── Animated gradient border ───────────────────── */
+        .gradient-border {
+            border: 1px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        }
+
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.3), rgba(96, 165, 250, 0.2), rgba(167, 139, 250, 0.2));
+            z-index: -1;
+        }
+
+        /* ─── Skill badge ─────────────────────────────────── */
+        .skill-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            border: 1px solid rgba(34, 211, 238, 0.2);
+            background: rgba(34, 211, 238, 0.05);
+            color: #67E8F9;
+            transition: all 0.2s;
+        }
+
+        .skill-badge:hover {
+            background: rgba(34, 211, 238, 0.12);
+            border-color: rgba(34, 211, 238, 0.45);
+        }
+
+        .skill-badge.blue {
+            border-color: rgba(96, 165, 250, 0.25);
+            background: rgba(96, 165, 250, 0.06);
+            color: #93C5FD;
+        }
+
+        .skill-badge.purple {
+            border-color: rgba(167, 139, 250, 0.25);
+            background: rgba(167, 139, 250, 0.06);
+            color: #C4B5FD;
+        }
+
+        .skill-badge.green {
+            border-color: rgba(52, 211, 153, 0.25);
+            background: rgba(52, 211, 153, 0.06);
+            color: #6EE7B7;
+        }
+
+        /* ─── Progress bar ────────────────────────────────── */
+        .progress-bar {
+            height: 2px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--cyan), var(--blue));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.4);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            100% {
+                left: 100%;
+            }
+        }
+
+        /* ─── Navbar ──────────────────────────────────────── */
+        #navbar {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(34, 211, 238, 0.08);
+        }
+
+        .nav-link {
+            position: relative;
+            color: #94A3B8;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--cyan);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #22D3EE;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-link.active {
+            color: #22D3EE;
+        }
+
+        /* ─── Hero terminal animation ─────────────────────── */
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.1em;
+            background: var(--cyan);
+            vertical-align: -0.15em;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* ─── Section label ───────────────────────────────── */
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--cyan);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-label::before {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 1px;
+            background: var(--cyan);
+        }
+
+        /* ─── Dot indicator ───────────────────────────────── */
+        .dot-active {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22D3EE;
+            box-shadow: 0 0 8px rgba(34, 211, 238, 0.8);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scale(0.8);
+            }
+        }
+
+        /* ─── Back to top ─────────────────────────────────── */
+        #backToTop {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        #backToTop.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* ─── Mobile menu ─────────────────────────────────── */
+        #mobileMenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease;
+        }
+
+        #mobileMenu.open {
+            max-height: 400px;
+        }
+
+        /* Orbit animation for hero visual */
+        @keyframes orbit {
+            from {
+                transform: rotate(0deg) translateX(80px) rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg) translateX(80px) rotate(-360deg);
+            }
+        }
+
+        .orbit-dot {
+            animation: orbit 8s linear infinite;
+        }
+    </style>
+</head>
+
+<body class="font-body">
+
+    <!-- ═══════════════════════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════════════════════════ -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-navy-900/80" style="background:rgba(8,13,26,0.85);">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="flex items-center justify-between h-16">
+
+                <!-- Logo / Name -->
+                <a href="#home" class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded border border-cyan-400/40 flex items-center justify-center"
+                        style="background:rgba(34,211,238,0.08);">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                            <rect x="1" y="1" width="5" height="5" rx="1" fill="#22D3EE" opacity="0.9" />
+                            <rect x="8" y="1" width="5" height="5" rx="1" fill="#60A5FA" opacity="0.7" />
+                            <rect x="1" y="8" width="5" height="5" rx="1" fill="#A78BFA" opacity="0.7" />
+                            <rect x="8" y="8" width="5" height="5" rx="1" fill="#22D3EE" opacity="0.5" />
+                        </svg>
+                    </div>
+                    <span class="font-display font-700 text-white text-sm tracking-wide">M. Ariyo Syahraza<span
+                            class="text-cyan-400"></span></span>
+                </a>
+
+                <!-- Desktop nav -->
+                <div class="hidden md:flex items-center gap-7">
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#whatido" class="nav-link">Experience</a>
+                    <a href="#skills" class="nav-link">Skills</a>
+                    <a href="#projects" class="nav-link">Projects</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </div>
+
+                <!-- CTA button -->
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="#contact"
+                        class="text-sm px-4 py-1.5 rounded border border-cyan-400/40 text-cyan-400 hover:bg-cyan-400/10 transition font-mono"
+                        style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;">
+                        Contact Me
+                    </a>
+                </div>
+
+                <!-- Hamburger -->
+                <button id="hamburger" class="md:hidden flex flex-col gap-1.5 p-1" aria-label="Menu">
+                    <span class="hamburger-line block w-5 h-px bg-slate-400 transition-all duration-300"></span>
+                    <span class="hamburger-line block w-5 h-px bg-slate-400 transition-all duration-300"></span>
+                    <span class="hamburger-line block w-3.5 h-px bg-slate-400 transition-all duration-300"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="md:hidden border-t border-white/5">
+            <div class="px-4 py-4 flex flex-col gap-4" style="background:rgba(8,13,26,0.97);">
+                <a href="#about" class="nav-link text-sm">About</a>
+                <a href="#whatido" class="nav-link text-sm">Experience</a>
+                <a href="#skills" class="nav-link text-sm">Skills</a>
+                <a href="#projects" class="nav-link text-sm">Projects</a>
+                <a href="#contact" class="nav-link text-sm">Contact</a>
+                <a href="#contact"
+                    class="text-sm px-4 py-2 rounded border border-cyan-400/40 text-cyan-400 text-center mt-1"
+                    style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;">
+                    Contact Me
+                </a>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+     HERO SECTION
+══════════════════════════════════════════════════════════ -->
+    <section id="home" class="relative min-h-screen flex items-center pt-16 grid-bg overflow-hidden">
+
+        <!-- Background glow blobs -->
+        <div class="absolute top-20 left-1/4 w-96 h-96 rounded-full opacity-10 pointer-events-none"
+            style="background:radial-gradient(circle, #22D3EE 0%, transparent 70%);filter:blur(60px);"></div>
+        <div class="absolute bottom-20 right-1/4 w-80 h-80 rounded-full opacity-8 pointer-events-none"
+            style="background:radial-gradient(circle, #8B5CF6 0%, transparent 70%);filter:blur(80px);"></div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-20 w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+                <!-- Left: Text content -->
+                <div class="space-y-7">
+                    <!-- Label pill -->
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-400/20 text-xs"
+                        style="background:rgba(34,211,238,0.07);font-family:'JetBrains Mono',monospace;color:#67E8F9;letter-spacing:0.05em;">
+                        <span class="dot-active"></span>
+                        Data • Machine Learning • Artificial Intelligence
+                    </div>
+
+                    <!-- Headline -->
+                    <h1 class="font-display font-800 text-white leading-tight"
+                        style="font-size:clamp(2rem,5vw,3.25rem);font-weight:800;">
+                        Building
+                        <span class="block"
+                            style="background:linear-gradient(135deg,#22D3EE,#60A5FA,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Data-Driven</span>
+                        and AI-Powered
+                        <span class="block text-white">Solutions</span>
+                    </h1>
+
+                    <!-- Subheadline -->
+                    <p class="text-slate-400 text-lg leading-relaxed max-w-lg">
+                        I focus on transforming raw data into insights, pipelines, machine learning models, and
+                        intelligent solutions.
+                    </p>
+
+                    <!-- Terminal line -->
+                    <div class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/6"
+                        style="background:rgba(13,21,38,0.8);font-family:'JetBrains Mono',monospace;">
+                        <span class="text-cyan-400/60 text-xs">$</span>
+                        <span class="text-cyan-300 text-sm">python run_model.py --mode production</span>
+                        <span class="terminal-cursor"></span>
+                    </div>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-wrap gap-3 pt-1">
+                        <a href="#projects"
+                            class="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-600 text-white transition-all duration-300"
+                            style="background:linear-gradient(135deg,#0891B2,#1D4ED8);box-shadow:0 4px 20px rgba(8,145,178,0.35);"
+                            onmouseover="this.style.boxShadow='0 6px 28px rgba(8,145,178,0.55)'"
+                            onmouseout="this.style.boxShadow='0 4px 20px rgba(8,145,178,0.35)'">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <path d="M2 7h10M7 2l5 5-5 5" stroke="white" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                            View Projects
+                        </a>
+                        <a href="#contact"
+                            class="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-600 text-cyan-400 border border-cyan-400/30 hover:bg-cyan-400/8 hover:border-cyan-400/60 transition-all duration-300">
+                            Contact Me
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right: Dashboard card -->
+                <!-- Right: Profile & Professional Cards -->
+                <div class="hidden lg:block relative">
+                    <div class="relative w-full max-w-md ml-auto aspect-square flex items-center justify-center">
+
+                        <!-- Background Glow & Orbital rings -->
+                        <div class="absolute inset-0 rounded-full glow-cyan opacity-20 blur-3xl"></div>
+                        <div
+                            class="absolute inset-4 rounded-full border border-cyan-400/10 animate-[spin_20s_linear_infinite] border-dashed">
+                        </div>
+                        <div
+                            class="absolute inset-10 rounded-full border border-blue-400/10 animate-[spin_15s_linear_infinite_reverse]">
+                        </div>
+
+                        <!-- Main Profile Image Container -->
+                        <div class="relative z-10 w-72 h-72 rounded-full p-2"
+                            style="background: linear-gradient(135deg, rgba(34,211,238,0.3), rgba(167,139,250,0.3)); box-shadow: 0 0 40px rgba(34,211,238,0.15);">
+                            <div
+                                class="w-full h-full rounded-full overflow-hidden border-2 border-navy-900 bg-navy-800">
+                                <!-- Ganti src dengan path foto profilmu -->
+                                <img src="asset/profile.png" alt="Profile Photo"
+                                    class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-300" />
+                            </div>
+                        </div>
+
+                        <!-- Floating Card 1: Role & Availability -->
+                        <div class="absolute top-8 -left-4 z-20 rounded-xl p-3 border border-white/10 shadow-2xl backdrop-blur-md animate-float"
+                            style="background:rgba(13,21,38,0.85); animation-delay: 0s;">
+                            <div class="flex items-center justify-between gap-4 mb-1">
+                                <span class="text-xs text-slate-400 font-mono"
+                                    style="font-family:'JetBrains Mono',monospace;">Target Role</span>
+                                <span class="flex h-2 w-2 relative">
+                                    <span
+                                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                </span>
+                            </div>
+                            <div class="text-sm font-700 text-white">AI & Data Engineer</div>
+                        </div>
+
+                        <!-- Floating Card 2: Academic Background -->
+                        <div class="absolute bottom-20 -left-10 z-20 rounded-xl p-3 border border-white/10 shadow-2xl backdrop-blur-md animate-float"
+                            style="background:rgba(13,21,38,0.85); animation-delay: 1.5s;">
+                            <div class="text-xs text-slate-400 font-mono mb-1"
+                                style="font-family:'JetBrains Mono',monospace;">B.Sc. Information Technology</div>
+                            <div class="text-sm font-700 text-white flex items-center gap-2">
+                                GPA: 3.85/4.00
+                                <span class="text-[0.65rem] px-1.5 py-0.5 rounded font-mono"
+                                    style="background:rgba(34,211,238,0.15); color:#22D3EE;">Data & AI</span>
+                            </div>
+                        </div>
+
+                        <!-- Floating Card 3: Highlight Experience -->
+                        <div class="absolute top-28 -right-8 z-20 rounded-xl p-3 border border-white/10 shadow-2xl backdrop-blur-md animate-float"
+                            style="background:rgba(13,21,38,0.85); animation-delay: 0.8s;">
+                            <div class="text-xs text-slate-400 font-mono mb-1"
+                                style="font-family:'JetBrains Mono',monospace;">Key Experience</div>
+                            <div class="text-sm font-700 text-white flex items-center gap-2">
+                                Informatics Mentor
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FBBF24"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                    </polygon>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Floating Card 4: Tech Stack -->
+                        <div class="absolute bottom-6 -right-2 z-20 rounded-xl p-3 border border-white/10 shadow-2xl backdrop-blur-md animate-float"
+                            style="background:rgba(13,21,38,0.85); animation-delay: 2.2s;">
+                            <div class="text-xs text-slate-400 font-mono mb-2"
+                                style="font-family:'JetBrains Mono',monospace;">Core Stack</div>
+                            <div class="flex flex-wrap gap-1.5 w-32">
+                                <span class="skill-badge" style="padding:2px 6px; font-size:0.65rem;">Python</span>
+                                <span class="skill-badge" style="padding:2px 6px; font-size:0.65rem;">LangChain</span>
+                                <span class="skill-badge blue" style="padding:2px 6px; font-size:0.65rem;">SQL</span>
+                                <span class="skill-badge purple"
+                                    style="padding:2px 6px; font-size:0.65rem;">Scikit-learn</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
+            <span class="text-xs text-slate-500 font-mono"
+                style="font-family:'JetBrains Mono',monospace;letter-spacing:0.1em;">SCROLL</span>
+            <div class="w-px h-8 bg-gradient-to-b from-cyan-400 to-transparent"></div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+     ABOUT SECTION
+══════════════════════════════════════════════════════════ -->
+    <section id="about" class="py-24 relative">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+
+            <div class="mb-12">
+                <div class="section-label mb-3">01 — About</div>
+                <h2 class="font-display font-700 text-3xl text-white">Who I Am</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
+
+                <!-- Left: Bio -->
+                <div class="lg:col-span-3 space-y-5">
+                    <p class="text-slate-300 text-lg leading-relaxed">
+                        Saya adalah seorang penekun bidang IT dengan fokus pada <span
+                            class="text-cyan-400 font-500">data</span>, <span class="text-blue-400 font-500">machine
+                            learning</span>, dan <span class="text-purple-400 font-500">artificial intelligence</span>.
+                        Saya tertarik membangun solusi yang menghubungkan data processing, analytics, automation, dan
+                        model cerdas untuk membantu pengambilan keputusan berbasis data.
+                    </p>
+                    <p class="text-slate-400 leading-relaxed">
+                        Dengan pemahaman mendalam pada seluruh data lifecycle — dari ingestion hingga insight — saya
+                        mampu bekerja sebagai Data Analyst, Data Engineer, hingga ML/AI Engineer. Saya percaya bahwa
+                        data yang terkelola dengan baik adalah fondasi dari solusi bisnis yang kuat.
+                    </p>
+
+                    <!-- Quick info grid -->
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <div class="flex items-center gap-2 text-sm text-slate-400">
+                            <span class="text-cyan-400">▸</span> Focus: Data & AI Solutions
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-slate-400">
+                            <span class="text-cyan-400">▸</span> Available for: Full-time / Freelance
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-slate-400">
+                            <span class="text-cyan-400">▸</span> Location: Indonesia
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-slate-400">
+                            <span class="text-cyan-400">▸</span> Language: ID / EN
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Highlight cards -->
+                <div class="lg:col-span-2 grid grid-cols-2 gap-3">
+                    <!-- Data Analytics -->
+                    <div class="card-hover rounded-xl p-4 border border-cyan-400/15 col-span-1"
+                        style="background:rgba(34,211,238,0.04);">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mb-3"
+                            style="background:rgba(34,211,238,0.12);">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <rect x="1" y="8" width="3" height="7" rx="1" fill="#22D3EE" />
+                                <rect x="6" y="5" width="3" height="10" rx="1" fill="#22D3EE" opacity="0.7" />
+                                <rect x="11" y="2" width="3" height="13" rx="1" fill="#22D3EE" opacity="0.5" />
+                            </svg>
+                        </div>
+                        <div class="text-sm font-600 text-white mb-1">Data Analytics</div>
+                        <div class="text-xs text-slate-500 leading-relaxed">Insights from raw data</div>
+                    </div>
+
+                    <!-- ETL & Pipeline -->
+                    <div class="card-hover rounded-xl p-4 border border-blue-400/15 col-span-1"
+                        style="background:rgba(96,165,250,0.04);">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mb-3"
+                            style="background:rgba(96,165,250,0.12);">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <circle cx="3" cy="8" r="2" fill="#60A5FA" />
+                                <circle cx="13" cy="8" r="2" fill="#60A5FA" opacity="0.6" />
+                                <path d="M5 8h6" stroke="#60A5FA" stroke-width="1.5" stroke-linecap="round" />
+                                <path d="M9 5l3 3-3 3" stroke="#60A5FA" stroke-width="1.2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        <div class="text-sm font-600 text-white mb-1">ETL & Pipeline</div>
+                        <div class="text-xs text-slate-500 leading-relaxed">Reliable data flow</div>
+                    </div>
+
+                    <!-- Machine Learning -->
+                    <div class="card-hover rounded-xl p-4 border border-purple-400/15 col-span-1"
+                        style="background:rgba(167,139,250,0.04);">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mb-3"
+                            style="background:rgba(167,139,250,0.12);">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <circle cx="4" cy="4" r="2" fill="#A78BFA" />
+                                <circle cx="12" cy="4" r="2" fill="#A78BFA" opacity="0.7" />
+                                <circle cx="4" cy="12" r="2" fill="#A78BFA" opacity="0.7" />
+                                <circle cx="12" cy="12" r="2" fill="#A78BFA" opacity="0.5" />
+                                <circle cx="8" cy="8" r="2.5" fill="#A78BFA" opacity="0.9" />
+                                <path d="M4 4L8 8M12 4L8 8M4 12L8 8M12 12L8 8" stroke="#A78BFA" stroke-width="0.8"
+                                    opacity="0.5" />
+                            </svg>
+                        </div>
+                        <div class="text-sm font-600 text-white mb-1">Machine Learning</div>
+                        <div class="text-xs text-slate-500 leading-relaxed">Predictive models</div>
+                    </div>
+
+                    <!-- AI Exploration -->
+                    <div class="card-hover rounded-xl p-4 border border-green-400/15 col-span-1"
+                        style="background:rgba(52,211,153,0.04);">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center mb-3"
+                            style="background:rgba(52,211,153,0.12);">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M8 2C8 2 10 4 10 7C10 9.5 8 11 8 11" stroke="#34D399" stroke-width="1.5"
+                                    stroke-linecap="round" />
+                                <path d="M8 2C8 2 6 4 6 7C6 9.5 8 11 8 11" stroke="#34D399" stroke-width="1.5"
+                                    stroke-linecap="round" />
+                                <circle cx="8" cy="7" r="2" fill="#34D399" opacity="0.8" />
+                                <path d="M5 13h6M8 11v2" stroke="#34D399" stroke-width="1.2" stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <div class="text-sm font-600 text-white mb-1">AI Exploration</div>
+                        <div class="text-xs text-slate-500 leading-relaxed">NLP, LLM & automation</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+     WHAT I DO SECTION
+══════════════════════════════════════════════════════════ -->
+    <section id="whatido" class="py-24 relative grid-bg">
+        <div class="absolute inset-0 pointer-events-none"
+            style="background:radial-gradient(ellipse at 50% 0%, rgba(34,211,238,0.04) 0%, transparent 60%);"></div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 relative">
+
+            <div class="mb-12">
+                <div class="section-label mb-3">02 — Services</div>
+                <h2 class="font-display font-700 text-3xl text-white">What I Do</h2>
+                <p class="text-slate-400 mt-2 max-w-xl">From raw data to production-ready models and pipelines — across
+                    the full data engineering and AI spectrum.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                <!-- Card: Data Analysis -->
+                <div class="card-hover group rounded-xl p-5 border border-white/8"
+                    style="background:rgba(13,21,38,0.7);">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                        style="background:linear-gradient(135deg,rgba(34,211,238,0.15),rgba(34,211,238,0.05));border:1px solid rgba(34,211,238,0.2);">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <rect x="1" y="9" width="4" height="8" rx="1" fill="#22D3EE" />
+                            <rect x="7" y="6" width="4" height="11" rx="1" fill="#22D3EE" opacity="0.7" />
+                            <rect x="13" y="3" width="4" height="14" rx="1" fill="#22D3EE" opacity="0.5" />
+                            <path d="M2 6l5-3 5 2 4-3" stroke="#22D3EE" stroke-width="1.2" fill="none" opacity="0.6"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-600 text-white text-base mb-2">Data Analysis</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Membersihkan, mengolah, menganalisis, dan
+                        memvisualisasikan data untuk menghasilkan insight yang actionable bagi bisnis.</p>
+                    <div class="mt-4 flex flex-wrap gap-1.5">
+                        <span class="skill-badge">Pandas</span>
+                        <span class="skill-badge">SQL</span>
+                        <span class="skill-badge">Power BI</span>
+                    </div>
+                </div>
+
+                <!-- Card: Data Engineering -->
+                <div class="card-hover group rounded-xl p-5 border border-white/8"
+                    style="background:rgba(13,21,38,0.7);">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                        style="background:linear-gradient(135deg,rgba(96,165,250,0.15),rgba(96,165,250,0.05));border:1px solid rgba(96,165,250,0.2);">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <rect x="2" y="2" width="6" height="6" rx="1.5" fill="#60A5FA" opacity="0.8" />
+                            <rect x="10" y="2" width="6" height="6" rx="1.5" fill="#60A5FA" opacity="0.5" />
+                            <rect x="6" y="10" width="6" height="6" rx="1.5" fill="#60A5FA" opacity="0.6" />
+                            <path d="M8 5H10M5 8V10M13 8V10" stroke="#60A5FA" stroke-width="1.2"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-600 text-white text-base mb-2">Data Engineering</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Membangun alur data, integrasi database,
+                        transformasi data, dan pipeline yang terstruktur dan skalabel.</p>
+                    <div class="mt-4 flex flex-wrap gap-1.5">
+                        <span class="skill-badge blue">PostgreSQL</span>
+                        <span class="skill-badge blue">Airflow</span>
+                        <span class="skill-badge blue">Spark</span>
+                    </div>
+                </div>
+
+                <!-- Card: ETL Development -->
+                <div class="card-hover group rounded-xl p-5 border border-white/8"
+                    style="background:rgba(13,21,38,0.7);">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                        style="background:linear-gradient(135deg,rgba(52,211,153,0.15),rgba(52,211,153,0.05));border:1px solid rgba(52,211,153,0.2);">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <circle cx="4" cy="9" r="3" fill="#34D399" opacity="0.7" />
+                            <circle cx="14" cy="9" r="3" fill="#34D399" opacity="0.5" />
+                            <path d="M7 9h4M12 7l2 2-2 2" stroke="#34D399" stroke-width="1.3" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-600 text-white text-base mb-2">ETL Development</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Membuat proses extract, transform, load dari
+                        berbagai sumber data ke sistem penyimpanan yang terstandarisasi.</p>
+                    <div class="mt-4 flex flex-wrap gap-1.5">
+                        <span class="skill-badge green">Python</span>
+                        <span class="skill-badge green">SQL</span>
+                        <span class="skill-badge green">PostgreSQL</span>
+                    </div>
+                </div>
+
+                <!-- Card: Machine Learning -->
+                <div class="card-hover group rounded-xl p-5 border border-white/8"
+                    style="background:rgba(13,21,38,0.7);">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                        style="background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(167,139,250,0.05));border:1px solid rgba(167,139,250,0.2);">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <circle cx="5" cy="5" r="2" fill="#A78BFA" />
+                            <circle cx="13" cy="5" r="2" fill="#A78BFA" opacity="0.7" />
+                            <circle cx="5" cy="13" r="2" fill="#A78BFA" opacity="0.7" />
+                            <circle cx="13" cy="13" r="2" fill="#A78BFA" opacity="0.5" />
+                            <circle cx="9" cy="9" r="2.5" fill="#A78BFA" />
+                            <path d="M5 5L9 9M13 5L9 9M5 13L9 9M13 13L9 9" stroke="#A78BFA" stroke-width="0.9"
+                                opacity="0.5" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-600 text-white text-base mb-2">Machine Learning</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Membuat model prediksi, klasifikasi, evaluasi
+                        model, dan feature engineering untuk solusi berbasis data.</p>
+                    <div class="mt-4 flex flex-wrap gap-1.5">
+                        <span class="skill-badge purple">Scikit-learn</span>
+                        <span class="skill-badge purple">Feature Eng.</span>
+                        <span class="skill-badge purple">Evaluation</span>
+                    </div>
+                </div>
+
+                <!-- Card: Artificial Intelligence -->
+                <div class="card-hover group rounded-xl p-5 border border-white/8"
+                    style="background:rgba(13,21,38,0.7);">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                        style="background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(251,191,36,0.05));border:1px solid rgba(251,191,36,0.2);">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <path d="M9 2C9 2 12 5 12 8.5C12 11.5 9 13.5 9 13.5" stroke="#FBBF24" stroke-width="1.5"
+                                stroke-linecap="round" />
+                            <path d="M9 2C9 2 6 5 6 8.5C6 11.5 9 13.5 9 13.5" stroke="#FBBF24" stroke-width="1.5"
+                                stroke-linecap="round" />
+                            <circle cx="9" cy="8.5" r="2" fill="#FBBF24" opacity="0.9" />
+                            <path d="M6 15.5h6M9 13.5v2" stroke="#FBBF24" stroke-width="1.2" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-600 text-white text-base mb-2">Artificial Intelligence</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Mengeksplorasi NLP, LLM, automation, dan solusi
+                        berbasis AI untuk kebutuhan bisnis modern.</p>
+                    <div class="mt-4 flex flex-wrap gap-1.5">
+                        <span class="skill-badge"
+                            style="border-color:rgba(251,191,36,0.25);background:rgba(251,191,36,0.06);color:#FDE68A;">NLP</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(251,191,36,0.25);background:rgba(251,191,36,0.06);color:#FDE68A;">LLM</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(251,191,36,0.25);background:rgba(251,191,36,0.06);color:#FDE68A;">AI
+                            Automation</span>
+                    </div>
+                </div>
+
+                <!-- Card: Data Pipeline -->
+                <div class="card-hover group rounded-xl p-5 border border-white/8"
+                    style="background:rgba(13,21,38,0.7);">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                        style="background:linear-gradient(135deg,rgba(244,114,182,0.15),rgba(244,114,182,0.05));border:1px solid rgba(244,114,182,0.2);">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <rect x="1" y="7" width="4" height="4" rx="1" fill="#F472B6" opacity="0.9" />
+                            <rect x="7" y="7" width="4" height="4" rx="1" fill="#F472B6" opacity="0.7" />
+                            <rect x="13" y="7" width="4" height="4" rx="1" fill="#F472B6" opacity="0.5" />
+                            <path d="M5 9h2M11 9h2" stroke="#F472B6" stroke-width="1.5" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <h3 class="font-display font-600 text-white text-base mb-2">Data Pipeline</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Mendesain alur data dari ingestion, processing,
+                        validation, hingga output yang siap digunakan oleh sistem downstream.</p>
+                    <div class="mt-4 flex flex-wrap gap-1.5">
+                        <span class="skill-badge"
+                            style="border-color:rgba(244,114,182,0.25);background:rgba(244,114,182,0.06);color:#FBCFE8;">Ingestion</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(244,114,182,0.25);background:rgba(244,114,182,0.06);color:#FBCFE8;">Validation</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(244,114,182,0.25);background:rgba(244,114,182,0.06);color:#FBCFE8;">Orchestration</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+     SKILLS SECTION
+══════════════════════════════════════════════════════════ -->
+    <section id="skills" class="py-24 relative">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+
+            <div class="mb-12">
+                <div class="section-label mb-3">03 — Tech Stack</div>
+                <h2 class="font-display font-700 text-3xl text-white">Skills & Technologies</h2>
+                <p class="text-slate-400 mt-2 max-w-xl">A curated set of tools, languages, and frameworks I work with
+                    across the data and AI landscape.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <!-- Programming -->
+                <div class="rounded-xl p-5 border border-white/8 card-hover" style="background:rgba(13,21,38,0.6);">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-2 h-2 rounded-sm bg-cyan-400"></div>
+                        <span class="text-xs font-mono text-slate-400 uppercase tracking-widest"
+                            style="font-family:'JetBrains Mono',monospace;">Programming</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-badge">Python</span>
+                        <span class="skill-badge">SQL</span>
+                        <span class="skill-badge">JavaScript</span>
+                        <span class="skill-badge">Bash</span>
+                    </div>
+                </div>
+
+                <!-- Data Analysis -->
+                <div class="rounded-xl p-5 border border-white/8 card-hover" style="background:rgba(13,21,38,0.6);">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-2 h-2 rounded-sm bg-blue-400"></div>
+                        <span class="text-xs font-mono text-slate-400 uppercase tracking-widest"
+                            style="font-family:'JetBrains Mono',monospace;">Data Analysis</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-badge blue">Pandas</span>
+                        <span class="skill-badge blue">NumPy</span>
+                        <span class="skill-badge blue">Excel</span>
+                        <span class="skill-badge blue">Statistics</span>
+                    </div>
+                </div>
+
+                <!-- Data Visualization -->
+                <div class="rounded-xl p-5 border border-white/8 card-hover" style="background:rgba(13,21,38,0.6);">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-2 h-2 rounded-sm bg-purple-400"></div>
+                        <span class="text-xs font-mono text-slate-400 uppercase tracking-widest"
+                            style="font-family:'JetBrains Mono',monospace;">Data Visualization</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-badge purple">Matplotlib</span>
+                        <span class="skill-badge purple">Seaborn</span>
+                        <span class="skill-badge purple">Power BI</span>
+                        <span class="skill-badge purple">Tableau</span>
+                    </div>
+                </div>
+
+                <!-- Database -->
+                <div class="rounded-xl p-5 border border-white/8 card-hover" style="background:rgba(13,21,38,0.6);">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-2 h-2 rounded-sm bg-green-400"></div>
+                        <span class="text-xs font-mono text-slate-400 uppercase tracking-widest"
+                            style="font-family:'JetBrains Mono',monospace;">Database</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-badge green">PostgreSQL</span>
+                        <span class="skill-badge green">MySQL</span>
+                        <span class="skill-badge green">MongoDB</span>
+                    </div>
+                </div>
+
+                <!-- Data Engineering -->
+                <div class="rounded-xl p-5 border border-white/8 card-hover" style="background:rgba(13,21,38,0.6);">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-2 h-2 rounded-sm" style="background:#F472B6;"></div>
+                        <span class="text-xs font-mono text-slate-400 uppercase tracking-widest"
+                            style="font-family:'JetBrains Mono',monospace;">Data Engineering</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-badge"
+                            style="border-color:rgba(244,114,182,0.25);background:rgba(244,114,182,0.06);color:#FBCFE8;">ETL</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(244,114,182,0.25);background:rgba(244,114,182,0.06);color:#FBCFE8;">Data
+                            Pipeline</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(244,114,182,0.25);background:rgba(244,114,182,0.06);color:#FBCFE8;">Data
+                            Cleaning</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(244,114,182,0.25);background:rgba(244,114,182,0.06);color:#FBCFE8;">Airflow</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(244,114,182,0.25);background:rgba(244,114,182,0.06);color:#FBCFE8;">Spark</span>
+                    </div>
+                </div>
+
+                <!-- Machine Learning -->
+                <div class="rounded-xl p-5 border border-white/8 card-hover" style="background:rgba(13,21,38,0.6);">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-2 h-2 rounded-sm bg-purple-500"></div>
+                        <span class="text-xs font-mono text-slate-400 uppercase tracking-widest"
+                            style="font-family:'JetBrains Mono',monospace;">Machine Learning</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-badge purple">Scikit-learn</span>
+                        <span class="skill-badge purple">Feature Eng.</span>
+                        <span class="skill-badge purple">Evaluation</span>
+                        <span class="skill-badge purple">Classification</span>
+                        <span class="skill-badge purple">Regression</span>
+                    </div>
+                </div>
+
+                <!-- Artificial Intelligence -->
+                <div class="rounded-xl p-5 border border-white/8 card-hover" style="background:rgba(13,21,38,0.6);">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-2 h-2 rounded-sm bg-amber-400"></div>
+                        <span class="text-xs font-mono text-slate-400 uppercase tracking-widest"
+                            style="font-family:'JetBrains Mono',monospace;">Artificial Intelligence</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-badge"
+                            style="border-color:rgba(251,191,36,0.25);background:rgba(251,191,36,0.06);color:#FDE68A;">NLP</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(251,191,36,0.25);background:rgba(251,191,36,0.06);color:#FDE68A;">LLM</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(251,191,36,0.25);background:rgba(251,191,36,0.06);color:#FDE68A;">Prompt
+                            Engineering</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(251,191,36,0.25);background:rgba(251,191,36,0.06);color:#FDE68A;">AI
+                            Automation</span>
+                    </div>
+                </div>
+
+                <!-- Tools -->
+                <div class="rounded-xl p-5 border border-white/8 card-hover" style="background:rgba(13,21,38,0.6);">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-2 h-2 rounded-sm bg-slate-400"></div>
+                        <span class="text-xs font-mono text-slate-400 uppercase tracking-widest"
+                            style="font-family:'JetBrains Mono',monospace;">Tools & DevOps</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-badge"
+                            style="border-color:rgba(148,163,184,0.2);background:rgba(148,163,184,0.04);color:#94A3B8;">Git</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(148,163,184,0.2);background:rgba(148,163,184,0.04);color:#94A3B8;">GitHub</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(148,163,184,0.2);background:rgba(148,163,184,0.04);color:#94A3B8;">Jupyter</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(148,163,184,0.2);background:rgba(148,163,184,0.04);color:#94A3B8;">Docker</span>
+                        <span class="skill-badge"
+                            style="border-color:rgba(148,163,184,0.2);background:rgba(148,163,184,0.04);color:#94A3B8;">VS
+                            Code</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+     PROJECTS SECTION
+══════════════════════════════════════════════════════════ -->
+    <section id="projects" class="py-24 relative grid-bg">
+        <div class="absolute inset-0 pointer-events-none"
+            style="background:radial-gradient(ellipse at 50% 100%, rgba(96,165,250,0.04) 0%, transparent 60%);"></div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 relative">
+
+            <div class="mb-12">
+                <div class="section-label mb-3">04 — Work</div>
+                <h2 class="font-display font-700 text-3xl text-white">Selected Projects</h2>
+                <p class="text-slate-400 mt-2 max-w-xl">A selection of data, ML, and AI projects demonstrating
+                    end-to-end problem-solving capabilities.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+                <!-- Project 1: Soybean Segmentation -->
+                <div class="card-hover rounded-xl border border-white/8 overflow-hidden"
+                    style="background:rgba(13,21,38,0.8);">
+                    <div class="h-2" style="background:linear-gradient(90deg,#22D3EE,#34D399);"></div>
+                    <div class="p-5">
+                        <div class="flex items-start justify-between mb-3">
+                            <span class="text-xs px-2 py-1 rounded font-mono"
+                                style="background:rgba(34,211,238,0.1);color:#67E8F9;font-family:'JetBrains Mono',monospace;">
+                                CV · Semantic Segmentation
+                            </span>
+                        </div>
+
+                        <a href="projects/soybean-segmentation-deeplabv3.html" class="block">
+                            <h3
+                                class="font-display font-700 text-white text-base mb-2 hover:text-cyan-400 transition-colors">
+                                Soybean Seed Segmentation with DeepLabV3+
+                            </h3>
+                        </a>
+
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                            Computer vision project untuk melakukan segmentasi biji kedelai menggunakan DeepLabV3+
+                            dengan perbandingan backbone MobileNet, ResNet-50, dan ResNet-101. Model terbaik mencapai
+                            mIoU 0.9794 dan mDice 0.9895.
+                        </p>
+
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            <span class="skill-badge">PyTorch</span>
+                            <span class="skill-badge">DeepLabV3+</span>
+                            <span class="skill-badge">ResNet-101</span>
+                            <span class="skill-badge">Image Segmentation</span>
+                        </div>
+
+                        <a href="projects/soybean-segmentation-deeplabv3.html"
+                            class="inline-flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 transition-colors font-mono"
+                            style="font-family:'JetBrains Mono',monospace;">
+                            View Case Study
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 2: Machine Learning -->
+                <div class="card-hover rounded-xl border border-white/8 overflow-hidden"
+                    style="background:rgba(13,21,38,0.8);">
+                    <div class="h-2" style="background:linear-gradient(90deg,#A78BFA,#60A5FA);"></div>
+                    <div class="p-5">
+                        <div class="flex items-start justify-between mb-3">
+                            <span class="text-xs px-2 py-1 rounded font-mono"
+                                style="background:rgba(167,139,250,0.1);color:#C4B5FD;font-family:'JetBrains Mono',monospace;">ML
+                                · Computer Vision</span>
+                        </div>
+                        <a href="projects/soybean-classification.html" class="block">
+                            <h3
+                                class="font-display font-700 text-white text-base mb-2 hover:text-purple-400 transition-colors">
+                                Indonesian Soybean Variety Classification</h3>
+                        </a>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">Pengembangan dataset citra asli dan model
+                            Machine Learning untuk klasifikasi varietas benih kedelai (Anjasmoro, Grobogan, DEGA-1)
+                            untuk kebutuhan agrikultur presisi.</p>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            <span class="skill-badge purple">PyTorch</span>
+                            <span class="skill-badge purple">CNN</span>
+                            <span class="skill-badge purple">Data Collection</span>
+                        </div>
+                        <a href="projects/soybean-classification.html"
+                            class="inline-flex items-center gap-1.5 text-xs text-purple-400 hover:text-purple-300 transition-colors font-mono"
+                            style="font-family:'JetBrains Mono',monospace;">View Case Study <svg width="12" height="12"
+                                viewBox="0 0 12 12" fill="none">
+                                <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></a>
+                    </div>
+                </div>
+
+                
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+     CONTACT SECTION
+══════════════════════════════════════════════════════════ -->
+    <section id="contact" class="py-24 relative">
+        <div class="absolute inset-0 pointer-events-none"
+            style="background:radial-gradient(ellipse at 50% 50%, rgba(34,211,238,0.03) 0%, transparent 70%);"></div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative">
+
+            <div class="section-label mb-3 justify-center">05 — Contact</div>
+            <h2 class="font-display font-700 text-3xl text-white mb-4">Let's Work Together</h2>
+            <p class="text-slate-400 text-lg mb-10 max-w-lg mx-auto leading-relaxed">
+                Interested in working together or discussing data and AI projects? I'd love to connect.
+            </p>
+
+            <!-- Contact cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+
+                <!-- Email -->
+                <a href="mailto:ariyo.syahraza@gmail.com"
+                    class="card-hover group rounded-xl p-5 border border-white/8 text-left"
+                    style="background:rgba(13,21,38,0.7);">
+                    <div class="w-9 h-9 rounded-lg flex items-center justify-center mb-3"
+                        style="background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.2);">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <rect x="1" y="3" width="14" height="10" rx="2" stroke="#22D3EE" stroke-width="1.2" />
+                            <path d="M1 5l7 5 7-5" stroke="#22D3EE" stroke-width="1.2" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div class="text-xs text-slate-500 mb-1 font-mono" style="font-family:'JetBrains Mono',monospace;">
+                        Email</div>
+                    <div class="text-sm text-slate-300 group-hover:text-cyan-400 transition-colors">
+                        ariyo.syahraza@gmail.com
+                    </div>
+                </a>
+
+                <!-- LinkedIn -->
+                <a href="https://linkedin.com/in/muhammad-ariyo-syahraza" target="_blank"
+                    class="card-hover group rounded-xl p-5 border border-white/8 text-left"
+                    style="background:rgba(13,21,38,0.7);">
+                    <div class="w-9 h-9 rounded-lg flex items-center justify-center mb-3"
+                        style="background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.2);">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <rect x="1" y="1" width="14" height="14" rx="2" stroke="#60A5FA" stroke-width="1.2" />
+                            <path d="M5 7v5M5 5v0.5" stroke="#60A5FA" stroke-width="1.4" stroke-linecap="round" />
+                            <path d="M8 12V9c0-1 .5-2 2-2s2 1 2 2v3" stroke="#60A5FA" stroke-width="1.2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="text-xs text-slate-500 mb-1 font-mono" style="font-family:'JetBrains Mono',monospace;">
+                        LinkedIn</div>
+                    <div class="text-sm text-slate-300 group-hover:text-blue-400 transition-colors">
+                        linkedin.com/in/muhammad-ariyo-syahraza</div>
+                </a>
+
+                <!-- GitHub -->
+                <a href="https://github.com/AriyoSyahraza" target="_blank"
+                    class="card-hover group rounded-xl p-5 border border-white/8 text-left"
+                    style="background:rgba(13,21,38,0.7);">
+                    <div class="w-9 h-9 rounded-lg flex items-center justify-center mb-3"
+                        style="background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path
+                                d="M8 1C4.134 1 1 4.134 1 8c0 3.09 2.004 5.715 4.786 6.635.35.064.479-.152.479-.337 0-.166-.007-.72-.01-1.308-1.948.423-2.36-.833-2.36-.833-.318-.809-.777-1.024-.777-1.024-.636-.434.048-.425.048-.425.703.049 1.073.722 1.073.722.625 1.07 1.638.76 2.037.581.063-.453.244-.76.445-.936-1.554-.177-3.188-.777-3.188-3.459 0-.764.273-1.388.72-1.879-.072-.177-.312-.889.069-1.852 0 0 .587-.188 1.923.717A6.693 6.693 0 0 1 8 4.956c.594.003 1.19.08 1.748.234 1.334-.905 1.919-.717 1.919-.717.383.963.142 1.675.07 1.852.449.491.719 1.115.719 1.879 0 2.689-1.637 3.28-3.196 3.453.251.216.475.643.475 1.296 0 .935-.008 1.69-.008 1.918 0 .187.127.405.483.337C12.998 13.71 15 11.088 15 8c0-3.866-3.134-7-7-7z"
+                                fill="#A78BFA" />
+                        </svg>
+                    </div>
+                    <div class="text-xs text-slate-500 mb-1 font-mono" style="font-family:'JetBrains Mono',monospace;">
+                        GitHub</div>
+                    <div class="text-sm text-slate-300 group-hover:text-purple-400 transition-colors">
+                        github.com/AriyoSyahraza</div>
+                </a>
+            </div>
+
+            <!-- CTA -->
+            <a href="mailto:ariyo.syahraza@gmail.com"
+                class="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl text-sm font-600 text-white transition-all duration-300"
+                style="background:linear-gradient(135deg,#0891B2,#1D4ED8);box-shadow:0 4px 24px rgba(8,145,178,0.35);"
+                onmouseover="this.style.boxShadow='0 6px 32px rgba(8,145,178,0.55)'"
+                onmouseout="this.style.boxShadow='0 4px 24px rgba(8,145,178,0.35)'">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <rect x="1" y="2.5" width="12" height="9" rx="1.5" stroke="white" stroke-width="1.2" />
+                    <path d="M1 4.5l6 4 6-4" stroke="white" stroke-width="1.2" stroke-linecap="round" />
+                </svg>
+                Send Email
+            </a>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════════ -->
+    <footer class="py-8 border-t" style="border-color:rgba(255,255,255,0.05);background:rgba(4,7,15,0.8);">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded flex items-center justify-center"
+                        style="background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.2);">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                            <rect x="1" y="1" width="4" height="4" rx="0.8" fill="#22D3EE" />
+                            <rect x="7" y="1" width="4" height="4" rx="0.8" fill="#60A5FA" opacity="0.7" />
+                            <rect x="1" y="7" width="4" height="4" rx="0.8" fill="#A78BFA" opacity="0.7" />
+                            <rect x="7" y="7" width="4" height="4" rx="0.8" fill="#22D3EE" opacity="0.5" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="font-display font-600 text-white text-sm">M. Ariyo Syahraza</div>
+                        <div class="text-xs text-slate-500 font-mono" style="font-family:'JetBrains Mono',monospace;">
+                            Data, Machine Learning, and AI Enthusiast</div>
+                    </div>
+                </div>
+                <div class="text-xs text-slate-600 font-mono" style="font-family:'JetBrains Mono',monospace;">
+                    © 2026 Ariyo. Built with passion for data.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+     BACK TO TOP BUTTON
+══════════════════════════════════════════════════════════ -->
+    <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+        class="fixed bottom-6 right-6 w-10 h-10 rounded-lg border border-cyan-400/30 flex items-center justify-center z-40 transition-all hover:border-cyan-400/60 hover:bg-cyan-400/10"
+        style="background:rgba(13,21,38,0.9);" aria-label="Back to top">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M7 11V3M3 7l4-4 4 4" stroke="#22D3EE" stroke-width="1.4" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </svg>
+    </button>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════════ -->
+    <script>
+        // ─── Mini bar chart in hero ─────────────────────────────
+        const chart = document.getElementById('miniBarChart');
+        if (chart) {
+            const heights = [8, 12, 9, 15, 10, 13, 11, 14, 9, 16, 12, 14];
+            chart.innerHTML = heights.map(h =>
+                `<div style="width:8px;height:${h}px;background:rgba(96,165,250,${0.3 + h / 40});border-radius:2px;"></div>`
+            ).join('');
+        }
+
+        // ─── Hamburger / mobile menu ────────────────────────────
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        let menuOpen = false;
+
+        hamburger.addEventListener('click', () => {
+            menuOpen = !menuOpen;
+            mobileMenu.classList.toggle('open', menuOpen);
+            const lines = hamburger.querySelectorAll('.hamburger-line');
+            if (menuOpen) {
+                lines[0].style.cssText = 'transform:translateY(6px) rotate(45deg);background:#22D3EE';
+                lines[1].style.cssText = 'opacity:0;';
+                lines[2].style.cssText = 'transform:translateY(-6px) rotate(-45deg);width:20px;background:#22D3EE';
+            } else {
+                lines.forEach(l => l.style.cssText = '');
+            }
+        });
+
+        // Close mobile menu on link click
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuOpen = false;
+                mobileMenu.classList.remove('open');
+                hamburger.querySelectorAll('.hamburger-line').forEach(l => l.style.cssText = '');
+            });
+        });
+
+        // ─── Smooth scroll for nav links ────────────────────────
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                const id = a.getAttribute('href').slice(1);
+                const el = document.getElementById(id);
+                if (el) {
+                    e.preventDefault();
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // ─── Back to top visibility ──────────────────────────────
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            backToTop.classList.toggle('visible', window.scrollY > 400);
+        });
+
+        // ─── Active nav section on scroll ───────────────────────
+        const sections = ['home', 'about', 'whatido', 'skills', 'projects', 'contact'];
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    navLinks.forEach(link => {
+                        const href = link.getAttribute('href');
+                        link.classList.toggle('active',
+                            href === `#${id}` ||
+                            (id === 'whatido' && href === '#whatido')
+                        );
+                    });
+                }
+            });
+        }, { threshold: 0.4 });
+
+        sections.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) observer.observe(el);
+        });
+
+        // ─── Navbar bg on scroll ────────────────────────────────
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.style.background = 'rgba(4,7,15,0.95)';
+            } else {
+                navbar.style.background = 'rgba(8,13,26,0.85)';
+            }
+        });
+    </script>
+</body>
+
+</html>

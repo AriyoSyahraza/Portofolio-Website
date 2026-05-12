@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soybean Segmentation — DeepLabV3+ Case Study</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --navy-950: #04070F;
+      --navy-900: #080D1A;
+      --navy-800: #0D1526;
+      --cyan: #22D3EE;
+      --blue: #60A5FA;
+      --purple: #A78BFA;
+      --green: #34D399;
+      --amber: #FBBF24;
+      --red: #EF4444
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      background: var(--navy-900);
+      font-family: 'DM Sans', sans-serif;
+      color: #CBD5E1;
+      overflow-x: hidden
+    }
+
+    .grid-bg {
+      background-image: linear-gradient(rgba(34, 211, 238, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, .04) 1px, transparent 1px);
+      background-size: 40px 40px
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 6px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--navy-950)
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #22D3EE;
+      border-radius: 2px
+    }
+
+    .skill-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .02em;
+      border: 1px solid rgba(34, 211, 238, .2);
+      background: rgba(34, 211, 238, .05);
+      color: #67E8F9
+    }
+
+    .skill-badge.green {
+      border-color: rgba(52, 211, 153, .25);
+      background: rgba(52, 211, 153, .06);
+      color: #6EE7B7
+    }
+
+    .skill-badge.purple {
+      border-color: rgba(167, 139, 250, .25);
+      background: rgba(167, 139, 250, .06);
+      color: #C4B5FD
+    }
+
+    .skill-badge.amber {
+      border-color: rgba(251, 191, 36, .25);
+      background: rgba(251, 191, 36, .06);
+      color: #FDE68A
+    }
+
+    .section-card {
+      background: rgba(13, 21, 38, .8);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 14px;
+      padding: 1.75rem
+    }
+
+    .metric-card {
+      background: rgba(13, 21, 38, .9);
+      border: 1px solid rgba(34, 211, 238, .12);
+      border-radius: 12px;
+      padding: 1.25rem
+    }
+
+    .section-title-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(34, 211, 238, .1);
+      border: 1px solid rgba(34, 211, 238, .2)
+    }
+
+    .step-item {
+      display: flex;
+      gap: 1rem;
+      padding: .875rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, .04)
+    }
+
+    .step-item:last-child {
+      border-bottom: none
+    }
+
+    .step-number {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem;
+      font-weight: 600;
+      background: rgba(34, 211, 238, .1);
+      border: 1px solid rgba(34, 211, 238, .2);
+      color: #22D3EE
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 12px
+    }
+
+    table {
+      min-width: 900px
+    }
+
+    .best-tag {
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(52, 211, 153, .12);
+      color: #6EE7B7;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .68rem;
+      border: 1px solid rgba(52, 211, 153, .2)
+    }
+
+    .algo-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .68rem
+    }
+
+    .algo-pill.resnet {
+      background: rgba(34, 211, 238, .11);
+      color: #67E8F9;
+      border: 1px solid rgba(34, 211, 238, .2)
+    }
+
+    .algo-pill.resnet101 {
+      background: rgba(52, 211, 153, .11);
+      color: #6EE7B7;
+      border: 1px solid rgba(52, 211, 153, .2)
+    }
+
+    .algo-pill.mobile {
+      background: rgba(167, 139, 250, .11);
+      color: #C4B5FD;
+      border: 1px solid rgba(167, 139, 250, .2)
+    }
+
+    .screenshot-ph {
+      background: rgba(13, 21, 38, .7);
+      border: 1px dashed rgba(34, 211, 238, .2);
+      border-radius: 12px;
+      min-height: 230px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px;
+      overflow: hidden
+    }
+
+    .screenshot-ph img {
+      max-width: 100%;
+      max-height: 190px;
+      object-fit: contain;
+      border-radius: 10px
+    }
+
+    .screenshot-wide {
+      min-height: 280px
+    }
+
+    .screenshot-wide img {
+      max-height: 235px
+    }
+
+    .visual-note {
+      border: 1px solid rgba(255, 255, 255, .06);
+      background: rgba(4, 7, 15, .38);
+      border-radius: 12px;
+      padding: 14px
+    }
+
+    @media(max-width:640px) {
+      .section-card {
+        padding: 1.15rem
+      }
+
+      .screenshot-ph {
+        min-height: 210px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav style="background:rgba(4,7,15,.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(34,211,238,.06);"
+    class="sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-14">
+        <a href="../index.html"
+          class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm"><svg width="14"
+            height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M9 1L3 7l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg><span style="font-family:'JetBrains Mono',monospace;font-size:.75rem;">Back to Portfolio</span></a>
+        <div class="flex items-center gap-2">
+          <div class="w-5 h-5 rounded flex items-center justify-center"
+            style="background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.2);"><svg width="10" height="10"
+              viewBox="0 0 10 10" fill="none">
+              <rect x="1" y="1" width="3" height="3" rx=".6" fill="#22D3EE" />
+              <rect x="6" y="1" width="3" height="3" rx=".6" fill="#60A5FA" opacity=".7" />
+              <rect x="1" y="6" width="3" height="3" rx=".6" fill="#A78BFA" opacity=".7" />
+              <rect x="6" y="6" width="3" height="3" rx=".6" fill="#22D3EE" opacity=".5" />
+            </svg></div><span style="font-family:'Syne',sans-serif;font-weight:700;color:white;font-size:.8rem;">
+            Ariyo <span style="color:#22D3EE;"> DataAI</span></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <section class="relative grid-bg py-14 overflow-hidden">
+    <div class="absolute top-10 right-0 w-72 h-72 rounded-full opacity-8 pointer-events-none"
+      style="background:radial-gradient(circle,#22D3EE 0%,transparent 70%);filter:blur(60px);"></div>
+    <div class="absolute bottom-0 left-0 w-72 h-72 rounded-full opacity-8 pointer-events-none"
+      style="background:radial-gradient(circle,#34D399 0%,transparent 70%);filter:blur(70px);"></div>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 relative">
+      <div class="flex items-center gap-2 mb-6"
+        style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#475569;"><a href="../index.html"
+          class="hover:text-cyan-400 transition-colors">Portfolio</a><span>/</span><a href="../index.html#projects"
+          class="hover:text-cyan-400 transition-colors">Projects</a><span>/</span><span style="color:#94A3B8;">Soybean
+          Seed Segmentation</span></div>
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border mb-5"
+        style="border-color:rgba(34,211,238,.2);background:rgba(34,211,238,.07);font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#67E8F9;letter-spacing:.05em;">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <circle cx="5" cy="5" r="4" stroke="#22D3EE" stroke-width="1.2" />
+          <path d="M3 5l1.5 1.5L7 3.5" stroke="#22D3EE" stroke-width="1.2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>Computer Vision · Semantic Segmentation
+      </div>
+      <h1
+        style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.75rem,4vw,2.75rem);color:white;line-height:1.2;"
+        class="mb-4">Soybean Seed<br /><span
+          style="background:linear-gradient(135deg,#22D3EE,#60A5FA,#34D399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Segmentation
+          with DeepLabV3+</span></h1>
+      <p class="text-slate-400 text-lg leading-relaxed max-w-2xl mb-8">Project segmentasi citra biji kedelai menggunakan
+        DeepLabV3+ untuk memisahkan area biji dari latar belakang. Eksperimen dilakukan dengan beberapa backbone, yaitu
+        ResNet-50, ResNet-101, dan MobileNet, lalu hasil mask digunakan untuk membentuk data per-biji yang lebih siap
+        untuk ekstraksi fitur dan analisis kemiripan visual.</p>
+      <div class="flex flex-wrap gap-3 mb-6"><span class="skill-badge">DeepLabV3+</span><span
+          class="skill-badge green">Semantic Segmentation</span><span class="skill-badge purple">ResNet-101</span><span
+          class="skill-badge">ResNet-50</span><span class="skill-badge amber">MobileNet</span><span
+          class="skill-badge green">PyTorch</span></div>
+      <div class="flex flex-wrap gap-4 text-sm" style="font-family:'JetBrains Mono',monospace;font-size:.72rem;">
+        <div class="text-slate-400">Dataset: 125 soybean images</div>
+        <div class="text-slate-400">Input: 800 dpi scanner images</div>
+        <div class="text-slate-400">DOI: add-your-doi-here</div>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-14 space-y-10">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div class="metric-card text-center">
+        <div
+          style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;background:linear-gradient(135deg,#22D3EE,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+          0.9794</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#475569;margin-top:4px;">Best mIoU
+        </div>
+      </div>
+      <div class="metric-card text-center">
+        <div
+          style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;background:linear-gradient(135deg,#60A5FA,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+          0.9895</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#475569;margin-top:4px;">Best mDice
+        </div>
+      </div>
+      <div class="metric-card text-center">
+        <div
+          style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;background:linear-gradient(135deg,#A78BFA,#34D399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+          0.9630</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#475569;margin-top:4px;">Best IoU Seed
+        </div>
+      </div>
+      <div class="metric-card text-center">
+        <div
+          style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;background:linear-gradient(135deg,#34D399,#22D3EE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+          R101</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#475569;margin-top:4px;">Best Backbone
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+          style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);"><svg width="15" height="15"
+            viewBox="0 0 15 15" fill="none">
+            <circle cx="7.5" cy="7.5" r="6.5" stroke="#EF4444" stroke-width="1.2" />
+            <path d="M7.5 4.5v3.5" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round" />
+            <circle cx="7.5" cy="10.5" r=".8" fill="#EF4444" />
+          </svg></div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:700;color:white;font-size:1rem;">Problem Statement</h2>
+      </div>
+      <p class="text-slate-400 leading-relaxed">Analisis visual biji kedelai membutuhkan area objek yang bersih agar
+        fitur warna dan morfometri tidak tercampur dengan latar belakang. Jika segmentasi dilakukan secara manual,
+        prosesnya lambat, tidak konsisten, dan sulit diterapkan pada banyak citra. Project ini membangun pipeline
+        segmentasi otomatis agar area biji dapat dipisahkan secara akurat dan hasilnya dapat digunakan untuk ekstraksi
+        fitur serta proses prediksi kemiripan visual terhadap varietas tetua.</p>
+    </div>
+
+    <div class="section-card">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="section-title-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <circle cx="7.5" cy="7.5" r="6.5" stroke="#22D3EE" stroke-width="1.2" />
+            <circle cx="7.5" cy="7.5" r="3" stroke="#22D3EE" stroke-width="1.2" />
+            <circle cx="7.5" cy="7.5" r="1" fill="#22D3EE" />
+          </svg></div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:700;color:white;font-size:1rem;">Objective</h2>
+      </div>
+      <div class="space-y-2.5">
+        <div class="flex items-start gap-2.5"><span style="color:#22D3EE;flex-shrink:0;margin-top:2px;">▸</span><span
+            class="text-slate-400 text-sm leading-relaxed">Membangun model segmentasi biji kedelai berbasis DeepLabV3+
+            untuk memisahkan seed dan background.</span></div>
+        <div class="flex items-start gap-2.5"><span style="color:#22D3EE;flex-shrink:0;margin-top:2px;">▸</span><span
+            class="text-slate-400 text-sm leading-relaxed">Membandingkan backbone ResNet-50, ResNet-101, dan MobileNet
+            menggunakan mIoU, mDice, IoU/bg, dan IoU/seed.</span></div>
+        <div class="flex items-start gap-2.5"><span style="color:#22D3EE;flex-shrink:0;margin-top:2px;">▸</span><span
+            class="text-slate-400 text-sm leading-relaxed">Menghasilkan mask segmentasi untuk cropping otomatis per-biji
+            dan pembentukan dataset turunan.</span></div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+          style="background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);"><svg width="15" height="15"
+            viewBox="0 0 15 15" fill="none">
+            <rect x="1" y="2" width="13" height="11" rx="2" stroke="#60A5FA" stroke-width="1.2" />
+            <path d="M1 6h13M5 6V13M10 6V13" stroke="#60A5FA" stroke-width="1" opacity=".5" />
+          </svg></div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:700;color:white;font-size:1rem;">Dataset & Acquisition</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <div class="text-xs text-slate-500 mb-2" style="font-family:'JetBrains Mono',monospace;">DATASET INFO</div>
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm"><span class="text-slate-500">Data Type</span><span
+                class="text-slate-300">Soybean seed images</span></div>
+            <div class="flex justify-between text-sm"><span class="text-slate-500">Total Images</span><span
+                class="text-slate-300">125 images</span></div>
+            <div class="flex justify-between text-sm"><span class="text-slate-500">Classes</span><span
+                class="text-slate-300">Seed / Background</span></div>
+            <div class="flex justify-between text-sm"><span class="text-slate-500">Resolution</span><span
+                class="text-slate-300">800 dpi scanner</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="text-xs text-slate-500 mb-2" style="font-family:'JetBrains Mono',monospace;">ACQUISITION SETUP
+          </div>
+          <div class="flex flex-wrap gap-1.5"><span class="skill-badge">Epson L360</span><span
+              class="skill-badge">Flatbed Scanner</span><span class="skill-badge green">Backlight Active</span><span
+              class="skill-badge purple">Controlled Lighting</span><span class="skill-badge amber">6800 × 9359 px</span>
+          </div>
+          <p class="text-xs text-slate-500 leading-relaxed mt-4">Scanner membantu menjaga posisi objek tetap datar,
+            pencahayaan seragam, dan bentuk biji lebih stabil dibanding pengambilan menggunakan kamera bebas.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+          style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);"><svg width="15" height="15"
+            viewBox="0 0 15 15" fill="none">
+            <path d="M3 5.5h9M3 9.5h9M5.5 1v13M9.5 1v13" stroke="#A78BFA" stroke-width="1.2" stroke-linecap="round" />
+          </svg></div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:700;color:white;font-size:1rem;">Tools & Technologies</h2>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="rounded-lg p-3 border border-white/6" style="background:rgba(4,7,15,.5);">
+          <div class="text-xs text-slate-500 mb-2 font-mono">Language</div><span class="skill-badge">Python</span>
+        </div>
+        <div class="rounded-lg p-3 border border-white/6" style="background:rgba(4,7,15,.5);">
+          <div class="text-xs text-slate-500 mb-2 font-mono">Framework</div>
+          <div class="flex flex-col gap-1.5"><span class="skill-badge green">PyTorch</span><span
+              class="skill-badge green">DeepLabV3+</span></div>
+        </div>
+        <div class="rounded-lg p-3 border border-white/6" style="background:rgba(4,7,15,.5);">
+          <div class="text-xs text-slate-500 mb-2 font-mono">Backbones</div>
+          <div class="flex flex-col gap-1.5"><span class="skill-badge">ResNet-50</span><span
+              class="skill-badge purple">ResNet-101</span><span class="skill-badge amber">MobileNet</span></div>
+        </div>
+        <div class="rounded-lg p-3 border border-white/6" style="background:rgba(4,7,15,.5);">
+          <div class="text-xs text-slate-500 mb-2 font-mono">Metrics</div>
+          <div class="flex flex-col gap-1.5"><span class="skill-badge">mIoU</span><span
+              class="skill-badge">mDice</span><span class="skill-badge">IoU/seed</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="flex items-center gap-2 mb-5">
+        <div class="section-title-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path d="M2 7.5h11M9 3.5l4 4-4 4" stroke="#22D3EE" stroke-width="1.2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg></div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:700;color:white;font-size:1rem;">Workflow & Process</h2>
+      </div>
+      <div>
+        <div class="step-item">
+          <div class="step-number">01</div>
+          <div>
+            <div class="text-sm font-600 text-white mb-1">Image Acquisition</div>
+            <p class="text-sm text-slate-400 leading-relaxed">Mengumpulkan citra biji kedelai menggunakan flatbed
+              scanner resolusi tinggi dan pencahayaan terkontrol.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">02</div>
+          <div>
+            <div class="text-sm font-600 text-white mb-1">Pre-processing</div>
+            <p class="text-sm text-slate-400 leading-relaxed">Melakukan cropping awal, resizing, labeling, dan penyiapan
+              citra untuk pelatihan segmentasi.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">03</div>
+          <div>
+            <div class="text-sm font-600 text-white mb-1">Mask Labeling</div>
+            <p class="text-sm text-slate-400 leading-relaxed">Membuat mask biner sebagai ground truth untuk membedakan
+              seed dan background.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">04</div>
+          <div>
+            <div class="text-sm font-600 text-white mb-1">Data Augmentation</div>
+            <p class="text-sm text-slate-400 leading-relaxed">Menerapkan flipping horizontal/vertical serta rotasi 90°,
+              180°, dan 270° untuk menambah variasi data latih.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">05</div>
+          <div>
+            <div class="text-sm font-600 text-white mb-1">DeepLabV3+ Training</div>
+            <p class="text-sm text-slate-400 leading-relaxed">Melatih DeepLabV3+ menggunakan backbone ResNet-50,
+              ResNet-101, dan MobileNet.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">06</div>
+          <div>
+            <div class="text-sm font-600 text-white mb-1">Evaluation & Model Selection</div>
+            <p class="text-sm text-slate-400 leading-relaxed">Mengevaluasi model dengan mIoU, mDice, IoU/bg, dan
+              IoU/seed.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">07</div>
+          <div>
+            <div class="text-sm font-600 text-white mb-1">Automatic Seed Cropping</div>
+            <p class="text-sm text-slate-400 leading-relaxed">Menggunakan mask untuk menghasilkan seed cropped dan seed
+              mask berpasangan sebagai dataset turunan per-biji.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="flex items-center gap-2 mb-5">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+          style="background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);"><svg width="15" height="15"
+            viewBox="0 0 15 15" fill="none">
+            <path d="M2 11L6 7l3 2 4-5" stroke="#34D399" stroke-width="1.4" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg></div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:700;color:white;font-size:1rem;">Backbone Comparison</h2>
+      </div>
+      <div class="table-wrap mb-6">
+        <div class="px-4 py-2.5 border-b border-white/6" style="background:rgba(4,7,15,.5);"><span
+            class="text-xs text-slate-500 font-mono">BEST SEGMENTATION RESULT BY BACKBONE</span></div>
+        <table class="w-full text-sm">
+          <thead>
+            <tr style="background:rgba(4,7,15,.3);">
+              <th class="text-left px-4 py-2.5 text-xs text-slate-500 font-500 font-mono">Backbone</th>
+              <th class="text-center px-4 py-2.5 text-xs text-slate-500 font-500 font-mono">Best Trial</th>
+              <th class="text-center px-4 py-2.5 text-xs text-slate-500 font-500 font-mono">Batch Train</th>
+              <th class="text-center px-4 py-2.5 text-xs text-slate-500 font-500 font-mono">Batch Val</th>
+              <th class="text-center px-4 py-2.5 text-xs text-slate-500 font-500 font-mono">Epoch</th>
+              <th class="text-center px-4 py-2.5 text-xs text-slate-500 font-500 font-mono">Train Loss</th>
+              <th class="text-center px-4 py-2.5 text-xs text-slate-500 font-500 font-mono">Val Loss</th>
+              <th class="text-center px-4 py-2.5 text-xs text-slate-500 font-500 font-mono">mIoU</th>
+              <th class="text-center px-4 py-2.5 text-xs text-slate-500 font-500 font-mono">mDice</th>
+              <th class="text-center px-4 py-2.5 text-xs text-slate-500 font-500 font-mono">IoU/seed</th>
+              <th class="text-center px-4 py-2.5 text-xs text-slate-500 font-500 font-mono">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t border-white/5 hover:bg-white/[0.025]">
+              <td class="px-4 py-3"><span class="algo-pill resnet">ResNet-50</span></td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">Trial 6</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">18</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">10</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">30</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">0.0142</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">0.0139</td>
+              <td class="px-4 py-3 text-center text-cyan-300 font-mono">0.9763</td>
+              <td class="px-4 py-3 text-center text-cyan-300 font-mono">0.9879</td>
+              <td class="px-4 py-3 text-center text-slate-300 font-mono">0.9575</td>
+              <td class="px-4 py-3 text-center"><span class="text-slate-600">—</span></td>
+            </tr>
+            <tr class="border-t" style="border-color:rgba(52,211,153,.16);background:rgba(52,211,153,.035);">
+              <td class="px-4 py-3"><span class="algo-pill resnet101">ResNet-101</span></td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">Trial 4</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">18</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">14</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">35</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">0.0128</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">0.0113</td>
+              <td class="px-4 py-3 text-center text-green-300 font-mono">0.9794</td>
+              <td class="px-4 py-3 text-center text-green-300 font-mono">0.9895</td>
+              <td class="px-4 py-3 text-center text-slate-300 font-mono">0.9630</td>
+              <td class="px-4 py-3 text-center"><span class="best-tag">Best</span></td>
+            </tr>
+            <tr class="border-t border-white/5 hover:bg-white/[0.025]">
+              <td class="px-4 py-3"><span class="algo-pill mobile">MobileNet</span></td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">Trial 2</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">18</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">10</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">35</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">0.0189</td>
+              <td class="px-4 py-3 text-center text-slate-400 font-mono">0.0183</td>
+              <td class="px-4 py-3 text-center text-cyan-300 font-mono">0.9701</td>
+              <td class="px-4 py-3 text-center text-cyan-300 font-mono">0.9847</td>
+              <td class="px-4 py-3 text-center text-slate-300 font-mono">0.9465</td>
+              <td class="px-4 py-3 text-center"><span class="text-slate-600">Lightweight</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="text-xs text-slate-500 mb-3 font-mono">KEY FINDINGS</div>
+      <div class="space-y-2.5">
+        <div class="flex items-start gap-3 p-3 rounded-lg border border-white/5" style="background:rgba(4,7,15,.4);">
+          <span style="color:#34D399;flex-shrink:0;font-size:1.1rem;margin-top:-1px;">①</span>
+          <div><span class="text-sm text-white">DeepLabV3+ dengan backbone ResNet-101 menjadi model terbaik</span><span
+              class="text-sm text-slate-400"> dengan mIoU 0.9794 dan mDice 0.9895.</span></div>
+        </div>
+        <div class="flex items-start gap-3 p-3 rounded-lg border border-white/5" style="background:rgba(4,7,15,.4);">
+          <span style="color:#22D3EE;flex-shrink:0;font-size:1.1rem;margin-top:-1px;">②</span>
+          <div><span class="text-sm text-white">ResNet-50 tetap kompetitif</span><span class="text-sm text-slate-400">
+              dengan mIoU 0.9763, namun ResNet-101 memberi hasil segmentasi paling kuat.</span></div>
+        </div>
+        <div class="flex items-start gap-3 p-3 rounded-lg border border-white/5" style="background:rgba(4,7,15,.4);">
+          <span style="color:#A78BFA;flex-shrink:0;font-size:1.1rem;margin-top:-1px;">③</span>
+          <div><span class="text-sm text-white">MobileNet dapat menjadi opsi deployment ringan</span><span
+              class="text-sm text-slate-400">, tetapi performanya lebih rendah dibanding backbone ResNet.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="flex items-center gap-2 mb-5">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+          style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);"><svg width="15" height="15"
+            viewBox="0 0 15 15" fill="none">
+            <rect x="1" y="2" width="13" height="11" rx="2" stroke="#A78BFA" stroke-width="1.2" />
+            <circle cx="5" cy="6.5" r="1.5" stroke="#A78BFA" stroke-width="1" />
+            <path d="M1 10l4-3 3 2 2-2 4 3" stroke="#A78BFA" stroke-width="1" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg></div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:700;color:white;font-size:1rem;">Visualizations /
+          Screenshots</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <!-- 1. Biji Asli -->
+        <div class="screenshot-ph">
+          <img src="../asset/segmentation-full-scan.jpg" alt="Original Soybean Full Scan"
+            class="w-full max-h-[210px] object-contain rounded-lg" />
+          <span class="text-xs text-slate-600 font-mono text-center">
+            Original Image — Full Soybean Scan
+          </span>
+        </div>
+
+        <!-- 2. Biji di-Segment -->
+        <div class="screenshot-ph">
+          <img src="../asset/segmentation-result.png" alt="Soybean Segmentation Result"
+            class="w-full max-h-[210px] object-contain rounded-lg" />
+          <span class="text-xs text-slate-600 font-mono text-center">
+            Segmentation Result — Seed Area Detected
+          </span>
+        </div>
+
+        <!-- 3. Biji di-Crop -->
+        <div class="screenshot-ph">
+          <img src="../asset/segmentation-crop-result.png" alt="Cropped Soybean Seed Result"
+            class="w-full max-h-[210px] object-contain rounded-lg" />
+          <span class="text-xs text-slate-600 font-mono text-center">
+            Cropped Seed Output — Based on Segmentation
+          </span>
+        </div>
+
+        <!-- 4. Mask Biji Crop -->
+        <div class="screenshot-ph">
+          <img src="../asset/cropped-seed-mask.png" alt="Cropped Soybean Seed Mask"
+            class="w-full max-h-[210px] object-contain rounded-lg" />
+          <span class="text-xs text-slate-600 font-mono text-center">
+            Cropped Seed Mask — Binary Mask Output
+          </span>
+        </div>
+
+        <!-- 5. Backbone Comparison -->
+        <div
+          class="screenshot-ph sm:col-span-2 mt-8 h-[375px] flex flex-col items-center justify-center overflow-hidden">
+          <div class="w-full h-[290px] flex items-center justify-center overflow-hidden rounded-lg">
+            <img src="../asset/backbone-comparison-deeplabv3.png" alt="DeepLabV3+ Backbone Comparison"
+              class="w-full h-full object-cover object-center rounded-lg block scale-[1.5]" />
+          </div>
+
+          <span class="text-xs text-slate-600 font-mono text-center block mt-3">
+            Backbone Comparison — MobileNet vs ResNet-50 vs ResNet-101
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+          style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);"><svg width="15" height="15"
+            viewBox="0 0 15 15" fill="none">
+            <path d="M7.5 2L13 12H2L7.5 2Z" stroke="#FBBF24" stroke-width="1.2" stroke-linejoin="round" />
+            <path d="M7.5 6v3" stroke="#FBBF24" stroke-width="1.3" stroke-linecap="round" />
+            <circle cx="7.5" cy="10.5" r=".7" fill="#FBBF24" />
+          </svg></div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:700;color:white;font-size:1rem;">Challenges</h2>
+      </div>
+      <div class="space-y-3">
+        <div class="flex items-start gap-2.5"><span style="color:#FBBF24;flex-shrink:0;margin-top:2px;">▸</span>
+          <div><span class="text-sm text-white font-500">GPU Memory Limitation</span><span
+              class="text-sm text-slate-400"> — batch train 20 pada ResNet-50 menyebabkan CUDA out of memory, sehingga
+              batch perlu disesuaikan.</span></div>
+        </div>
+        <div class="flex items-start gap-2.5"><span style="color:#FBBF24;flex-shrink:0;margin-top:2px;">▸</span>
+          <div><span class="text-sm text-white font-500">Small Object Boundary</span><span
+              class="text-sm text-slate-400"> — batas objek biji perlu dijaga agar cropping otomatis tidak memotong area
+              penting.</span></div>
+        </div>
+        <div class="flex items-start gap-2.5"><span style="color:#FBBF24;flex-shrink:0;margin-top:2px;">▸</span>
+          <div><span class="text-sm text-white font-500">Backbone Trade-off</span><span class="text-sm text-slate-400">
+              — ResNet-101 unggul secara performa, sedangkan MobileNet lebih ringan untuk deployment.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="section-title-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path d="M7.5 1.5C4.186 1.5 1.5 4.186 1.5 7.5S4.186 13.5 7.5 13.5 13.5 10.814 13.5 7.5 10.814 1.5 7.5 1.5z"
+              stroke="#22D3EE" stroke-width="1.2" />
+            <path d="M7.5 5v3l2 1.5" stroke="#22D3EE" stroke-width="1.2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg></div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:700;color:white;font-size:1rem;">What I Learned</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="rounded-lg p-3 border border-white/5" style="background:rgba(4,7,15,.4);">
+          <div class="text-sm font-600 text-white mb-1.5">Segmentation as Data Foundation</div>
+          <p class="text-xs text-slate-400 leading-relaxed">Segmentasi yang baik membuat ekstraksi fitur menjadi lebih
+            bersih karena fitur hanya dihitung dari area biji.</p>
+        </div>
+        <div class="rounded-lg p-3 border border-white/5" style="background:rgba(4,7,15,.4);">
+          <div class="text-sm font-600 text-white mb-1.5">Backbone Experimentation</div>
+          <p class="text-xs text-slate-400 leading-relaxed">Perbandingan backbone menunjukkan pentingnya mencari
+            keseimbangan antara performa dan kebutuhan komputasi.</p>
+        </div>
+        <div class="rounded-lg p-3 border border-white/5" style="background:rgba(4,7,15,.4);">
+          <div class="text-sm font-600 text-white mb-1.5">Evaluation Beyond Loss</div>
+          <p class="text-xs text-slate-400 leading-relaxed">Loss saja tidak cukup; mIoU, mDice, dan IoU/seed lebih
+            relevan untuk segmentasi objek.</p>
+        </div>
+        <div class="rounded-lg p-3 border border-white/5" style="background:rgba(4,7,15,.4);">
+          <div class="text-sm font-600 text-white mb-1.5">Research-to-Portfolio Storytelling</div>
+          <p class="text-xs text-slate-400 leading-relaxed">Project riset lebih mudah dipahami recruiter dengan
+            menampilkan problem, pipeline, result, dan visual output.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+          style="background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);"><svg width="15" height="15"
+            viewBox="0 0 15 15" fill="none">
+            <path
+              d="M6 3H3.5C2.672 3 2 3.672 2 4.5v7C2 12.328 2.672 13 3.5 13h7c.828 0 1.5-.672 1.5-1.5V9M9 2h4v4M13 2L7 8"
+              stroke="#60A5FA" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg></div>
+        <h2 style="font-family:'Syne',sans-serif;font-weight:700;color:white;font-size:1rem;">Project Links</h2>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a href="#" target="_blank"
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all duration-200 text-sm hover:border-cyan-400/50"
+          style="border-color:rgba(255,255,255,.08);background:rgba(4,7,15,.5);color:#94A3B8;">GitHub Repository</a>
+        <a href="https://doi.org/10.1016/j.dib.2026.112524" target="_blank"
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all duration-200 text-sm hover:border-cyan-400/50"
+          style="border-color:rgba(255,255,255,.08);background:rgba(4,7,15,.5);color:#94A3B8;">Published Paper /
+          DOI</a>
+        <a href="#"
+          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all duration-200 text-sm"
+          style="border-color:rgba(255,255,255,.06);background:rgba(4,7,15,.5);color:#475569;cursor:not-allowed;">Live
+          Demo (Optional)</a>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between pt-4"><a href="../index.html#"
+        class="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-cyan-400 transition-colors"
+        style="font-family:'JetBrains Mono',monospace;font-size:.75rem;"><svg width="14" height="14" viewBox="0 0 14 14"
+          fill="none">
+          <path d="M9 1L3 7l6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>All Projects</a><a href="../index.html#"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm text-white transition-all duration-200"
+        style="background:linear-gradient(135deg,#0891B2,#1D4ED8);font-family:'JetBrains Mono',monospace;font-size:.75rem;">Get
+        In Touch<svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M2 6h8M7 3l3 3-3 3" stroke="white" stroke-width="1.2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg></a></div>
+  </main>
+
+  <footer class="py-8 border-t mt-4" style="border-color:rgba(255,255,255,.05);background:rgba(4,7,15,.8);">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2">
+          <span style="font-family:'Syne',sans-serif;font-weight:700;color:white;font-size:.85rem;">M.
+            <span style="color:#22D3EE;">Ariyo</span>
+          </span>
+          <span class="text-slate-600 text-xs">—</span>
+          <span class="text-xs text-slate-500"
+            style="font-family:'JetBrains Mono',monospace;">Computer Vision & Data AI
+            Portfolio</span>
+        </div>
+        <div class="text-xs text-slate-600" style="font-family:'JetBrains Mono',monospace;">© 2026 M. Ariyo Syahraza
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
